@@ -4,9 +4,9 @@ DECLARE
         FROM Gys_Beyan B
         WHERE B.modul_kod = 1
           AND B.mukellef_bitis_tarih IS NULL
-          AND B.KISI_KOD BETWEEN '80920' AND '80920'
-          AND B.ADA = 338
-          AND B.PARSEL = 12
+      --    AND B.KISI_KOD BETWEEN '80920' AND '80920'
+          AND B.ADA = 551
+          AND B.PARSEL = 7
           AND KOD NOT IN
               (SELECT KOD
                FROM GYS_BEYAN B
