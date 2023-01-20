@@ -8,13 +8,13 @@
             GMCS.CADDE_SOKAK_KOD = GCS.KOD
                  INNER JOIN GONSON.GEN_MODUL GM ON
             GB.MODUL_KOD = GM.KOD
-                    INNER JOIN GONSON.FATMA_EMLAK FE ON
-            GB.ADA = FE.ADA AND GB.PARSEL = FE.PARSEL
+/*                    INNER JOIN GONSON.FATMA_EMLAK FE ON
+            GB.ADA = FE.ADA AND GB.PARSEL = FE.PARSEL*/
         WHERE GB.MODUL_KOD = 1
           AND GB.MUKELLEF_BITIS_TARIH IS NULL
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
       --    and GB.KISI_KOD = 80920
---          AND GB.ADA = 40
-  --        and GB.PARSEL = 8
-    order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
+          AND GB.ADA LIKE '%02'
+      and GB.PARSEL = '3'
+and gb.INSAAT_SINIF_KOD = '16'

@@ -19,6 +19,7 @@ DECLARE
       --    and GB.KISI_KOD = 80920
 --          AND GB.ADA = 40
   --        and GB.PARSEL = 8
+        and gb.INSAAT_SINIF_KOD = '16'
     order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
 
     V_Islem_Yapildi_Eh VARCHAR2(1);
