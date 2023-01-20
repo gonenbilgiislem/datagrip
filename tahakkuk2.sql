@@ -14,9 +14,11 @@ DECLARE
           AND GB.MUKELLEF_BITIS_TARIH IS NULL
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
-          AND GB.ADA = 751
-          and GB.PARSEL = 1
-          and GB.KISI_KOD = 80920;
+      --    and GB.KISI_KOD = 80920
+          AND GB.ADA = 40
+          and GB.PARSEL = 8
+    order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
+
     V_Islem_Yapildi_Eh VARCHAR2(1);
     X_TY_GEN_CEVAP     TY_GEN_CEVAP;
     X_Islem_Kod        Gys_Tahakkuk_Ana.Islem_Kod%TYPE;
@@ -53,13 +55,11 @@ BEGIN
             ELSE
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
-                    DBMS_OUTPUT.PUT_LINE('Kod2: ' || X_TY_Gen_Cevap.Kod || ' Aciklama2: ' || X_TY_Gen_Cevap.Aciklama);
-                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ' Kira Tahakkuk Yapıldı');
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ', Sıra No: ' || Rc_Bey.Sira_No ||' İşlem Yapıldı');
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
-                   DBMS_OUTPUT.PUT_LINE('MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
-                   DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ' Kira Tahakkuk Yapıldı');
+                   DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
                     ROLLBACK;
                    COMMIT;
                 END IF;
