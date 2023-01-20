@@ -10,18 +10,21 @@ DECLARE
             GMCS.CADDE_SOKAK_KOD = GCS.KOD
                  INNER JOIN GONSON.GEN_MODUL GM ON
             GB.MODUL_KOD = GM.KOD
+                    INNER JOIN GONSON.FATMA_EMLAK FE ON
+            GB.ADA = FE.ADA AND GB.PARSEL = FE.PARSEL
         WHERE GB.MODUL_KOD = 1
           AND GB.MUKELLEF_BITIS_TARIH IS NULL
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
       --    and GB.KISI_KOD = 80920
-          AND GB.ADA = 40
-          and GB.PARSEL = 8
+--          AND GB.ADA = 40
+  --        and GB.PARSEL = 8
     order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
 
     V_Islem_Yapildi_Eh VARCHAR2(1);
     X_TY_GEN_CEVAP     TY_GEN_CEVAP;
     X_Islem_Kod        Gys_Tahakkuk_Ana.Islem_Kod%TYPE;
+    VAR_ROWS          NUMBER;
 BEGIN
     FOR Rc_Bey IN Cr_Bey
         LOOP
@@ -29,6 +32,7 @@ BEGIN
             V_Islem_Yapildi_Eh := 'E';
             X_Islem_Kod := 'II_SINIF_TERKINI';
             EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG DISABLE';
+            VAR_ROWS := SQL%ROWCOUNT;
             PG_GYS_EMLAK_SERVIS.Sp_Emlak_Tahakkuk(
                     'I',
                     Rc_Bey.Kisi_Kod,
@@ -56,10 +60,12 @@ BEGIN
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
                     DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ', Sıra No: ' || Rc_Bey.Sira_No ||' İşlem Yapıldı');
+                    DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
+                   DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
                     ROLLBACK;
                    COMMIT;
                 END IF;
