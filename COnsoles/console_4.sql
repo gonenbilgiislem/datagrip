@@ -66,6 +66,8 @@ BEGIN
             END IF;
         END LOOP;
     DBMS_OUTPUT.PUT_LINE('Döngü Bitti');
+    COMMIT;
+  DBMS_OUTPUT.PUT_LINE('işlem tamamlandı');
 EXCEPTION
     WHEN NO_DATA_FOUND
         THEN
