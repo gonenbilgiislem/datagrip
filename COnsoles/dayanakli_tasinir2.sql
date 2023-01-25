@@ -13,11 +13,19 @@ select count(*),td1.SICIL_KOD,td1.TASINIR_KOD from TMS_DEMIRBAS td1
 where td1.TASINIR_KOD in (select td2.TASINIR_KOD from TMS_DEMIRBAS td2 where td2.TASINIR_KOD = td1.TASINIR_KOD
                                                                   and td2.SICIL_KOD <> td1.SICIL_KOD)
 --and td1.TASINIR_KOD  = '2530201030104'
-having count(td1.SICIL_KOD)>1
+having count(td1.SICIL_KOD)>=1
 group by td1.TASINIR_KOD,td1.SICIL_KOD
-order by td1.TASINIR_KOD,td1.SICIL_KOD;
+order by td1.SICIL_KOD,td1.TASINIR_KOD;
 ----------------------------------------------------------------------------------------------------------------------------
 select count(*),td1.SICIL_KOD,td1.TASINIR_KOD from TMS_DEMIRBAS td1
                                             where td1.TASINIR_KOD  = '2530201030104'
 having count(td1.SICIL_KOD)>1
 group by td1.SICIL_KOD,td1.TASINIR_KOD;
+----------------------------------------------------------------------------------------------------------------------------
+select count(*),td1.DAYANIKLI_SICIL_KOD,td1.TASINIR_KOD from TMS_TIF_GIRIS_DETAY td1
+where td1.DAYANIKLI_SICIL_KOD in (select td2.DAYANIKLI_SICIL_KOD from TMS_TIF_GIRIS_DETAY td2 where td2.TASINIR_KOD = td1.TASINIR_KOD
+                                                                  and td2.DAYANIKLI_SICIL_KOD <> td1.DAYANIKLI_SICIL_KOD)
+--and td1.TASINIR_KOD  = '2530201030104'
+having count(td1.SICIL_KOD)>1
+group by td1.TASINIR_KOD,td1.SICIL_KOD
+order by td1.SICIL_KOD,td1.TASINIR_KOD;
