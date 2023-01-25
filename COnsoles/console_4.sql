@@ -12,7 +12,7 @@ DECLARE
     X_Islem_Kod        Gys_Tahakkuk_Ana.Islem_Kod%TYPE;
     X_VADE_TARIH       DATE;
 BEGIN
-    FOR Rc_Eis IN Cr_Eis
+    FOR Rc.Bey IN Cr_Eis
         LOOP
             X_TY_GEN_CEVAP := TY_GEN_CEVAP();
             V_Islem_Yapildi_Eh := 'E';
@@ -24,20 +24,20 @@ BEGIN
                     'I',
                     1014,
                     X_Islem_Kod,
-                    Rc_Eis.Kisi_Kod,
-                    Rc_Eis.Kisi_Kod,
+                    Rc.Bey.Kisi_Kod,
+                    Rc.Bey.Kisi_Kod,
                     2023,
                     1,
                     12,
-                    Rc_Eis.Kac_Ay,
-                    Rc_Eis.TASINMAZ_KOD,
+                    Rc.Bey.Kac_Ay,
+                    Rc.Bey.TASINMAZ_KOD,
                     186,
                     NULL,
                     'E',
                     'V',
                     TO_DATE('31/12/2023', 'DD/MM/YYYY'),
                     TO_DATE(X_VADE_TARIH, 'DD/MM/YYYY'),
-                    Rc_Eis.ACIKLAMA || ' - 2023 Otomatik Kira Tahakkuk',
+                    Rc.Bey.ACIKLAMA || ' - 2023 Otomatik Kira Tahakkuk',
                     V_ISLEM_YAPILDI_EH,
                     27,
                     X_TY_GEN_CEVAP);
@@ -54,12 +54,12 @@ BEGIN
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
                     DBMS_OUTPUT.PUT_LINE('Kod2: ' || X_TY_Gen_Cevap.Kod || ' Aciklama2: ' || X_TY_Gen_Cevap.Aciklama);
-                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Eis.Kisi_Kod|| ', Taşınmaz Kodu: ' || Rc_Eis.TASINMAZ_KOD || ' Kira Tahakkuk Yapıldı');
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc.Bey.Kisi_Kod|| ', Taşınmaz Kodu: ' || Rc.Bey.TASINMAZ_KOD || ' Kira Tahakkuk Yapıldı');
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
                    DBMS_OUTPUT.PUT_LINE('MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
-                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Eis.Kisi_Kod|| ', Taşınmaz Kodu: ' || Rc_Eis.TASINMAZ_KOD || ' Kira Tahakkuk Yapılmadı');
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc.Bey.Kisi_Kod|| ', Taşınmaz Kodu: ' || Rc.Bey.TASINMAZ_KOD || ' Kira Tahakkuk Yapılmadı');
                     ROLLBACK;
                    COMMIT;
                 END IF;
