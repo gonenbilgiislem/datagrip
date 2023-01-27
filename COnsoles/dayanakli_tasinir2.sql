@@ -33,6 +33,7 @@ select
     ttgd.DONEM,
     td1.YIL
     ,ttgd.NOTLAR
+,td1.AMBAR_KOD
 from TMS_DEMIRBAS td1
         inner join TMS_TASINIR tt on td1.TASINIR_KOD = tt.TASINIR_KOD
         inner join TMS_TIF_GIRIS_DETAY ttgd on ttgd.TASINIR_KOD = td1.TASINIR_KOD and ttgd.DONEM= td1.yil and ttgd.AMBAR_KOD = td1.AMBAR_KOD and ttgd.DAYANIKLI_SICIL_KOD = td1.SICIL_KOD

@@ -10,22 +10,19 @@ DECLARE
             GMCS.CADDE_SOKAK_KOD = GCS.KOD
                  INNER JOIN GONSON.GEN_MODUL GM ON
             GB.MODUL_KOD = GM.KOD
-                    INNER JOIN GONSON.FATMA_EMLAK FE ON
-            GB.ADA = FE.ADA AND GB.PARSEL = FE.PARSEL
         WHERE GB.MODUL_KOD = 1
           AND GB.MUKELLEF_BITIS_TARIH IS NULL
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
-      --    and GB.KISI_KOD = 80920
---          AND GB.ADA = 40
-  --        and GB.PARSEL = 8
-        and gb.INSAAT_SINIF_KOD = '16'
-    order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
-
+--        AND GB.KISI_KOD = 80920
+          AND GB.ADA = 1038
+          AND GB.PARSEL = 127
+--        AND GB.INSAAT_SINIF_KOD = '16'
+        order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
     V_Islem_Yapildi_Eh VARCHAR2(1);
     X_TY_GEN_CEVAP     TY_GEN_CEVAP;
     X_Islem_Kod        Gys_Tahakkuk_Ana.Islem_Kod%TYPE;
-    VAR_ROWS          NUMBER;
+    VAR_ROWS           NUMBER;
 BEGIN
     FOR Rc_Bey IN Cr_Bey
         LOOP
@@ -53,26 +50,28 @@ BEGIN
             IF X_TY_Gen_Cevap.Kod IS NOT NULL
                 AND X_TY_Gen_Cevap.Aciklama IS NOT NULL
             THEN
-                 DBMS_OUTPUT.PUT_LINE('Kod1: ' || X_TY_Gen_Cevap.Kod || ' Aciklama1: ' || X_TY_Gen_Cevap.Aciklama);
+                DBMS_OUTPUT.PUT_LINE('Kod1: ' || X_TY_Gen_Cevap.Kod || ' Aciklama1: ' || X_TY_Gen_Cevap.Aciklama);
                 DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
                 DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
                 ROLLBACK;
             ELSE
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
-                    DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ', Sıra No: ' || Rc_Bey.Sira_No ||' İşlem Yapıldı');
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ', Sıra No: ' || Rc_Bey.Sira_No ||
+                                         ', Sıra No: ' || Rc_Bey.Sira_No || ' İşlem Yapıldı');
                     DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
-                   DBMS_OUTPUT.put_line('Kişi Kod: ' ||Rc_Bey.Kisi_Kod|| ', Sıra No: ' || Rc_Bey.Sira_No || ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
-                   DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ', Sıra No: ' || Rc_Bey.Sira_No ||
+                                         ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
+                    DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
                     ROLLBACK;
-                   COMMIT;
+                    COMMIT;
                 END IF;
             END IF;
         END LOOP;
-		DBMS_OUTPUT.PUT_LINE('Döngü Bitti');
+    DBMS_OUTPUT.PUT_LINE('Döngü Bitti');
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('işlem tamamlandı');
 EXCEPTION
