@@ -56,20 +56,34 @@ BEGIN
                 DBMS_OUTPUT.PUT_LINE('Kod1: ' || X_TY_Gen_Cevap.Kod || ' Aciklama1: ' || X_TY_Gen_Cevap.Aciklama);
                 DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
                 DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
+                INSERT INTO GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
+                VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapılmadı_Kod1',
+                        'Ada : ' || Rc_Bey.ADA, 'Parsel : ' || Rc_Bey.PARSEL);
+                COMMIT;
                 ROLLBACK;
             ELSE
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
-                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ' Sıra No: ' || Rc_Bey.Sira_No ||' İşlem Yapıldı');
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ' Sıra No: ' || Rc_Bey.Sira_No ||
+                                         ' İşlem Yapıldı');
                     DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
-                    insert into GYS_TAHAKKUK_DBMS_OUTPUT (KOD,"Alan1","Alan2","Alan3")
-                    VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapıldı');
+                    INSERT INTO GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
+                    VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapıldı_Kod2',
+                            'Ada : ' || Rc_Bey.ADA, 'Parsel : ' || Rc_Bey.PARSEL);
+
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
+                DBMS_OUTPUT.PUT_LINE('xxxxx');
+                DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
+                DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
                     DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ', Sıra No: ' || Rc_Bey.Sira_No ||
                                          ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
-                    DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
+                    insert into GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
+                    VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No,
+                            'İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ', 'Ada : ' || Rc_Bey.ADA,
+                            'Parsel : ' || Rc_Bey.PARSEL);
+                    COMMIT;
                     ROLLBACK;
                     COMMIT;
                 END IF;

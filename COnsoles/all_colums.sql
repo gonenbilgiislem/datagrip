@@ -15,3 +15,6 @@ inner join sys.all_tables t on col.owner = t.owner
 -- excluding some Oracle maintained schemas
 where col.owner in ('GONSON') AND COL.COLUMN_NAME LIKE '%SICIL_KOD%' AND COL.TABLE_NAME LIKE 'TMS%'
 order by col.owner, col.table_name, col.column_id;
+
+
+,2798,2895,3179,3342,3595,3809
