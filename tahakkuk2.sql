@@ -16,13 +16,14 @@ DECLARE
           AND GMK.KOY_EH = 'H'
 --        AND GB.KISI_KOD = 80920
           AND GB.ADA = 1038
-          AND GB.PARSEL = 127
+          AND GB.PARSEL = 125
 --        AND GB.INSAAT_SINIF_KOD = '16'
         order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
     V_Islem_Yapildi_Eh VARCHAR2(1);
     X_TY_GEN_CEVAP     TY_GEN_CEVAP;
     X_Islem_Kod        Gys_Tahakkuk_Ana.Islem_Kod%TYPE;
     VAR_ROWS           NUMBER;
+    X_HATA_KOD         GYS_TAHAKKUK_DBMS_OUTPUT.KOD%TYPE;
 BEGIN
     FOR Rc_Bey IN Cr_Bey
         LOOP
@@ -31,6 +32,8 @@ BEGIN
             X_Islem_Kod := 'II_SINIF_TERKINI';
             EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG DISABLE';
             VAR_ROWS := SQL%ROWCOUNT;
+            X_HATA_KOD := 0;
+            SELECT MAX(KOD) INTO X_HATA_KOD FROM GYS_TAHAKKUK_DBMS_OUTPUT;
             PG_GYS_EMLAK_SERVIS.Sp_Emlak_Tahakkuk(
                     'I',
                     Rc_Bey.Kisi_Kod,
@@ -57,9 +60,10 @@ BEGIN
             ELSE
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
-                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ', Sıra No: ' || Rc_Bey.Sira_No ||
-                                         ', Sıra No: ' || Rc_Bey.Sira_No || ' İşlem Yapıldı');
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ' Sıra No: ' || Rc_Bey.Sira_No ||' İşlem Yapıldı');
                     DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
+                    insert into GYS_TAHAKKUK_DBMS_OUTPUT (KOD,"Alan1","Alan2","Alan3")
+                    VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapıldı');
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
