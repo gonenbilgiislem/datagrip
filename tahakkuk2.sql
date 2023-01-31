@@ -15,8 +15,8 @@ DECLARE
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
 --        AND GB.KISI_KOD = 80920
-          AND GB.ADA = 1038
-          AND GB.PARSEL = 125
+          AND GB.ADA = 1511
+          AND GB.PARSEL = 183
 --        AND GB.INSAAT_SINIF_KOD = '16'
         order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
     V_Islem_Yapildi_Eh VARCHAR2(1);
@@ -29,7 +29,7 @@ BEGIN
         LOOP
             X_TY_GEN_CEVAP := TY_GEN_CEVAP();
             V_Islem_Yapildi_Eh := 'E';
-            X_Islem_Kod := 'II_SINIF_TERKINI';
+            X_Islem_Kod := 'ERTAN_TUNCEL_GUNCELLEME';
             EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG DISABLE';
             VAR_ROWS := SQL%ROWCOUNT;
             X_HATA_KOD := 0;
@@ -70,13 +70,17 @@ BEGIN
                     INSERT INTO GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
                     VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapıldı_Kod2',
                             'Ada : ' || Rc_Bey.ADA, 'Parsel : ' || Rc_Bey.PARSEL);
-
+                    UPDATE GYS_TAHAKKUK_ANA GTA
+                    SET GTA.ACIKLAMA = 'Ada : ' || Rc_Bey.ADA || ' Parsel : ' || Rc_Bey.PARSEL || ' ' || X_Islem_Kod
+                    WHERE GTA.KISI_KOD = Rc_Bey.Kisi_Kod
+                      AND GTA.ISLEM_KOD = X_Islem_Kod;
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
-                DBMS_OUTPUT.PUT_LINE('xxxxx');
-                DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
-                DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
+                    DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ' Sıra No: ' || Rc_Bey.Sira_No ||
+                                         ' İşlem Yapıldı');
+                    DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
+                    DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
                     DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ', Sıra No: ' || Rc_Bey.Sira_No ||
                                          ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
                     insert into GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
