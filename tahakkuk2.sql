@@ -15,8 +15,8 @@ DECLARE
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
 --        AND GB.KISI_KOD = 80920
-          AND GB.ADA = 1511
-          AND GB.PARSEL = 183
+          AND GB.ADA = 609
+          AND GB.PARSEL = 11
 --        AND GB.INSAAT_SINIF_KOD = '16'
         order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
     V_Islem_Yapildi_Eh VARCHAR2(1);
