@@ -14,9 +14,9 @@ DECLARE
           AND GB.MUKELLEF_BITIS_TARIH IS NULL
           AND GMK.AKTIF_EH = 'E'
           AND GMK.KOY_EH = 'H'
---        AND GB.KISI_KOD = 80920
-          AND GB.ADA = 609
-          AND GB.PARSEL = 11
+          AND GB.KISI_KOD = 33406045870
+          AND GB.ADA = 746
+          AND GB.PARSEL = 106
 --        AND GB.INSAAT_SINIF_KOD = '16'
         order by GB.KISI_KOD, GB.SIRA_NO, GB.ADA, GB.PARSEL;
     V_Islem_Yapildi_Eh VARCHAR2(1);
@@ -53,39 +53,57 @@ BEGIN
             IF X_TY_Gen_Cevap.Kod IS NOT NULL
                 AND X_TY_Gen_Cevap.Aciklama IS NOT NULL
             THEN
-                DBMS_OUTPUT.PUT_LINE('Kod1: ' || X_TY_Gen_Cevap.Kod || ' Aciklama1: ' || X_TY_Gen_Cevap.Aciklama);
+                DBMS_OUTPUT.PUT_LINE('SQLCODE-1: ' || X_TY_Gen_Cevap.Kod || ' Aciklama1: ' || X_TY_Gen_Cevap.Aciklama);
                 DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
                 DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
                 INSERT INTO GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
-                VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapılmadı_Kod1',
+                VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapılmadı_SQLCODE-1',
                         'Ada : ' || Rc_Bey.ADA, 'Parsel : ' || Rc_Bey.PARSEL);
                 COMMIT;
                 ROLLBACK;
             ELSE
+                --X_TY_Gen_Cevap.Kod IS NULL AND X_TY_Gen_Cevap.Aciklama IS  NULL İSE DAVRANIŞ BİÇİMİ
                 IF V_Islem_Yapildi_Eh = 'E'
                 THEN
                     DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ' Sıra No: ' || Rc_Bey.Sira_No ||
-                                         ' İşlem Yapıldı');
+                                         ' İşlem Yapıldı_SQLCODE-2');
                     DBMS_OUTPUT.PUT_LINE(VAR_ROWS);
                     INSERT INTO GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
-                    VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapıldı_Kod2',
+                    VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No, 'İşlem Yapıldı_SQLCODE-2',
                             'Ada : ' || Rc_Bey.ADA, 'Parsel : ' || Rc_Bey.PARSEL);
                     UPDATE GYS_TAHAKKUK_ANA GTA
                     SET GTA.ACIKLAMA = 'Ada : ' || Rc_Bey.ADA || ' Parsel : ' || Rc_Bey.PARSEL || ' ' || X_Islem_Kod
-                    WHERE GTA.KISI_KOD = Rc_Bey.Kisi_Kod
-                      AND GTA.ISLEM_KOD = X_Islem_Kod;
+                    WHERE GTA.ISLEM_KOD = X_Islem_Kod
+                      AND KOD IN (SELECT GT.TAHAK_KOD
+                                  FROM GYS_TAHAKKUK GT
+                                  WHERE GT.KISI_KOD = Rc_Bey.Kisi_Kod
+                                    and GT.KISI_KOD = gta.KISI_KOD
+                                    and GT.BEYAN_KOD = RC_Bey.KOD
+                                    AND GT.TAHAK_KOD = GTA.KOD);
+                    UPDATE GYS_TERKIN_ANA GTA
+                    SET GTA.ACIKLAMA = 'Ada : ' || Rc_Bey.ADA || ' Parsel : ' || Rc_Bey.PARSEL || ' ' || X_Islem_Kod
+                    WHERE GTA.ISLEM_KOD = X_Islem_Kod
+                      AND KOD IN (SELECT GT.TERKIN_KOD
+                                  FROM GYS_TERKIN GT
+                                  WHERE GT.KISI_KOD = Rc_Bey.Kisi_Kod
+                                    and GT.KISI_KOD = gta.KISI_KOD
+                                    and GT.BEYAN_KOD = RC_Bey.KOD
+                                    AND GT.TERKIN_KOD = GTA.KOD);
                     COMMIT;
                     EXECUTE IMMEDIATE 'ALTER TRIGGER TRG_GYS_TAHAKKUK_LOG ENABLE';
                 ELSE
+                    DBMS_OUTPUT.PUT_LINE('SQLCODE-3: ' || X_TY_Gen_Cevap.Kod || ' Aciklama3: ' ||
+                                         X_TY_Gen_Cevap.Aciklama);
                     DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ' Sıra No: ' || Rc_Bey.Sira_No ||
-                                         ' İşlem Yapıldı');
-                    DBMS_OUTPUT.PUT_LINE('SQLCODE-1_1: ' || SQLCODE);
-                    DBMS_OUTPUT.PUT_LINE('SQLERRM-1_2: ' || SQLERRM);
+                                         ' İşlem Yapılmadı_SQLCODE-3');
+                    DBMS_OUTPUT.PUT_LINE('SQLCODE-3_1: ' || SQLCODE);
+                    DBMS_OUTPUT.PUT_LINE('SQLERRM-3_2: ' || SQLERRM);
                     DBMS_OUTPUT.put_line('Kişi Kod: ' || Rc_Bey.Kisi_Kod || ', Sıra No: ' || Rc_Bey.Sira_No ||
-                                         ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ');
+                                         ' İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ_SQLCODE-3');
                     insert into GYS_TAHAKKUK_DBMS_OUTPUT (KOD, "Alan1", "Alan2", "Alan3", "Alan4", "Alan5")
                     VALUES ((X_HATA_KOD + 1), Rc_Bey.Kisi_Kod, Rc_Bey.Sira_No,
-                            'İşlem Yapılmadı - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ', 'Ada : ' || Rc_Bey.ADA,
+                            'İşlem Yapılmadı_SQLCODE-3 - MUHTEMELEN TAHAKKUK MEVCUT KONTROL EDİNİZ_SQLCODE-3',
+                            'Ada : ' || Rc_Bey.ADA,
                             'Parsel : ' || Rc_Bey.PARSEL);
                     COMMIT;
                     ROLLBACK;
@@ -99,14 +117,14 @@ BEGIN
 EXCEPTION
     WHEN NO_DATA_FOUND
         THEN
-            DBMS_OUTPUT.PUT_LINE('Kod5: ' || X_TY_Gen_Cevap.Kod || ' Aciklama5: ' || X_TY_Gen_Cevap.Aciklama);
-            DBMS_OUTPUT.PUT_LINE('SQLCODE-5_1: ' || SQLCODE);
-            DBMS_OUTPUT.PUT_LINE('SQLERRM-5_2: ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('SQLCODE-4: ' || X_TY_Gen_Cevap.Kod || ' Aciklama5: ' || X_TY_Gen_Cevap.Aciklama);
+            DBMS_OUTPUT.PUT_LINE('SQLCODE-4_1: ' || SQLCODE);
+            DBMS_OUTPUT.PUT_LINE('SQLERRM-4_2: ' || SQLERRM);
     WHEN OTHERS
         THEN
             DBMS_OUTPUT.put_line('ERROR!');
-            DBMS_OUTPUT.PUT_LINE('Kod6: ' || X_TY_Gen_Cevap.Kod || ' Aciklama6: ' || X_TY_Gen_Cevap.Aciklama);
-            DBMS_OUTPUT.PUT_LINE('SQLCODE-6_1: ' || SQLCODE);
-            DBMS_OUTPUT.PUT_LINE('SQLERRM-6_2: ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('SQLCODE-5: ' || X_TY_Gen_Cevap.Kod || ' Aciklama6: ' || X_TY_Gen_Cevap.Aciklama);
+            DBMS_OUTPUT.PUT_LINE('SQLCODE-5_1: ' || SQLCODE);
+            DBMS_OUTPUT.PUT_LINE('SQLERRM-5_2: ' || SQLERRM);
             COMMIT;
 END;
