@@ -1,10 +1,7 @@
-Select B.ODEME_ACIKLAMA
-From Eis_Kira_Sozlesme B
-Where B.Belediye_Kod = 1014
-  And B.Kisi_Kod Between '10000' And '9999999'
-  AND B.KAC_AY = 12
-AND (EXTRACT(YEAR FROM B.BITIS_TARIH) > 2022)
---AND B.ODEME_ACIKLAMA LIKE 'HER YIL MART AYI SONUNA KADAR ÖDENECEKTİR'
---AND B.ACIKLAMA LIKE '%ARAL%'
-GROUP BY B.ODEME_ACIKLAMA
-ORDER BY B.ODEME_ACIKLAMA;
+If X_Izin_Turu = 'S' Or X_Izin_Turu = 'M' Then V_Yil := V_Kontrol;
+Else If  X_Izin_Turu = 'T' THEN V_Yil := V_Kontrol-1;
+Else If PI_Belediye_Kod <> 1014 Then V_Yil := V_Kontrol;
+Else V_Yil := V_Kontrol;
+End If;
+End If;
+End If;
