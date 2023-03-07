@@ -8,11 +8,11 @@
       <jdbc-url>jdbc:oracle:thin:@192.168.0.43:1521:yereldev</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="SADASD.db" uuid="219520f7-b59d-4360-add1-c2b4f49b1c01">
+    <data-source source="LOCAL" name="db.sqlite3" uuid="0838c6ee-5db8-4122-b82f-4ad62d08d390">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:/Projects/Django_Projects/Bookshop/SADASD.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:/Projects/Django_projects/blogapp/db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

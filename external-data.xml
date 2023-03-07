@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<data>
-  <object-set>
-    <table path="main.books_book">
-      <table path="main.books_author" name="virtual_foreign_key_name" from="author_id" to="id"/>
-    </table>
-  </object-set>
-</data>
